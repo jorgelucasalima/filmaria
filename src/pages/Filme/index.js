@@ -1,12 +1,14 @@
 import {useEffect, useState} from 'react'
 import './filme-info.css'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import api from '../../services/api'
 
 
 export default function Filme(params) {
 
     const { id } = useParams()
+    const history = useHistory() 
+
     const [filme, setFilme] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -14,13 +16,27 @@ export default function Filme(params) {
         async function loadFilme() {
             const response = await api.get(`r-api/?api=filmes/${id}`)
 
+            if (response.data.length === 0) {
+                // verifica se tem alguma coisa na api com tamanho 0 de linha
+                //tentou acessar com o id porém não tem esse conteudo
+                // depois é enviado para a /home
+                history.replace('/')
+                return
+            }
+
             setFilme(response.data)
             setLoading(false)
         }
 
         loadFilme()
 
-    }, [id])
+        return ()=> {
+            console.log("COMPONENTE DESMONTADO")
+        }
+
+
+
+    }, [history, id])
 
 
     if (loading) {
@@ -33,12 +49,19 @@ export default function Filme(params) {
 
     return(
         <div className="filme-info">
-            <div className="filme">
-                <div>
-                    <strong>{filme.nome}</strong>
-                    <img src={filme.foto} alt={filme.nome} />
-                    <p>{filme.sinopse}</p>
-                </div>
+            <h1>{filme.nome}</h1>
+            <img src={filme.foto} alt={filme.nome} />
+            <h3>Sinopse</h3>
+            {filme.sinopse}
+        
+
+            <div className="botoes">
+                <button onClick={()=>{}}>Salvar</button>
+                <button>
+                    <a target="blank" href={`https://youtube.com/results?search_query=${filme.nome} Trailer`}>
+                        Trailer
+                    </a>
+                </button>
             </div>
         </div>
 

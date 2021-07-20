@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react'
 import './filme-info.css'
 import { useParams, useHistory } from 'react-router-dom'
 import api from '../../services/api'
+import { toast } from 'react-toastify'
+
 
 
 export default function Filme(params) {
@@ -50,7 +52,7 @@ export default function Filme(params) {
         //Se for igual ele devolve um TRUE se não for ele devolve um FALSE
     
         if (hasFilme) {
-            alert('Esse filme já está SALVO.')
+            toast.info('Esse filme já está SALVO.')
             return
             // o return é para parar a execução
         }
@@ -58,7 +60,7 @@ export default function Filme(params) {
         //adiciona o filme
         filmesSalvos.push(filme)
         localStorage.setItem('filmes', JSON.stringify(filmesSalvos))
-        alert("FILME SALVO COM SUCESSO.")
+        toast.success('Filme salvo com sucesso.')
 
     
     }
